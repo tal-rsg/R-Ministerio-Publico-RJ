@@ -11,8 +11,13 @@ c(1:10,20,100:200)
 
 # NA
 NA
+is.na(1)
+is.na(NA)
 c(1,2,3,NA,5)
+c(1,4,"abc",60)
+list(1, 4, "abc", 60)
 is.na(c(1,2,3,NA,5))
+c(1,2,3,4,99,55,44,99)==99
 
 # strings
 "hello"
@@ -20,11 +25,15 @@ class("hello")
 nchar("hello")
 c("hello","goodbye")
 nchar(c("hello","goodbye"))
-paste("hello","goodbye","and","ciao",sep='|')
-paste(c("hello","goodbye","and","ciao"),collapse="|")
+paste("hello","goodbye","and","ciao",sep=';')
+mys <- c("hello","goodbye","and","ciao")
+mys2 <- c("xxx","yyy","zzz","www")
+paste(mys, mys2, sep = ';')#collapse="|")
+  
 'hello'
-"'hello'"
+"bob's"
 '"hello"'
+
 
 # variables
 x <- 1:10
@@ -54,9 +63,11 @@ x && y
 x | y
 x || y
 x_vec <- c(T,F,T,F)
-y_vec <- c(F,F,T,T)
+y_vec <- c(T,F,T,T)
 x_vec & y_vec
 x_vec && y_vec
+x_vec | y_vec
+x_vec || y_vec
 
 quadrado <- function(x) {
   x^2

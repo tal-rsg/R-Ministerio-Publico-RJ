@@ -1,0 +1,23 @@
+---
+title: "MPRJ R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+
+```{r}
+library(tidyverse)
+```
+
+vamos aprender DATA FRAME
+```{r}
+df <- tibble(Nome=c("Dan", "Maria", "Jose"),
+             Altura=c(1.73, 1.82, 1.66))
+df
+```
+
+```{r}
+write_csv(df,"data/teste.csv")
+```
+

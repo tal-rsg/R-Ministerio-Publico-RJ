@@ -56,14 +56,14 @@ Encoding, tabela de preços de medicamentos da ANVISA
 Fonte: http://dados.gov.br/dataset/anvisa-precos-de-medicamentos
 
 ```{r}
-guess_encoding("data/TA_PRECOS_MEDICAMENTOS.csv")
+guess_encoding("data/TA_PRECOS_MEDICAMENTOS.zip")
 ```
 
 
 ```{r}
 locale_brazil <- locale(decimal_mark=",",
                         encoding="ISO-8859-1")
-df_medicamentos <- read_delim("data/TA_PRECOS_MEDICAMENTOS.csv",
+df_medicamentos <- read_delim("data/TA_PRECOS_MEDICAMENTOS.zip",
                               delim=";",
                               quote="", # arquivo contÃƒÂ©m " e ' espÃƒÂºrios
                               locale=locale_brazil)
