@@ -1,6 +1,8 @@
 ---
 title: "Exercicio Dplyr"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 Este exercício esta em [Exercícios Dplyr](https://jagodat.github.io/MPRJ-Exercicios/content/ex_dplyr.html), criado por Matheus Donato. 
@@ -8,6 +10,7 @@ Este exercício esta em [Exercícios Dplyr](https://jagodat.github.io/MPRJ-Exerc
 
 ```{r}
 library(tidyverse)
+library(writexl)
 ```
 
 Criando a tibble que iremos usar
@@ -70,7 +73,7 @@ Ordene os dados pelo gênero e em seguida faça females aparecer primeiro. Qual 
 
 ```{r}
 
-notas %>% arrange(genero)
+notas %>% arrange(genero, desc(reading_nota))
 
 ```
 
@@ -78,11 +81,8 @@ notas %>% arrange(genero)
 Ordene os dados por escola, depois por professor, depois por gênero, depois nota de matemática e por último nota de reading.
 
 ```{r}
-notas %>% arrange(escola)
-notas %>% arrange(prof)
-notas %>% arrange(genero)
-notas %>% arrange(mat_nota)
-notas %>% arrange(reading_nota)
+notas %>% arrange(escola, prof, genero, mat_nota, reading_nota)
+
 ```
 
 #Select
@@ -153,6 +153,12 @@ Imagine que você está criando um programa de recuperação. Filtre os estudant
 ```{r}
 notas %>% filter(mat_nota <= 3 | reading_nota <= 3)
 ```
+
+```{r}
+notas %>% arrange(desc(mat_nota)) %>% 
+  slice(1:2)
+```
+
 
 Filtre estudantes que tiveram uma nota em reading de 2,3 ou 4.
 ```{r}
@@ -242,12 +248,94 @@ Crie uma coluna “reading_score_centered_by_teacher”. O que você pode aprend
 Não é possivel criar uma coluna sem especificar seus valores
 
 ```{r}
-notas %>% mutate(reading_score_centered_by_teacher)
+
 ```
 
 Faça uma coluna “number_of_students_in_class” que é o número de estudantes da classe de estudantes.
 
 ```{r}
-notas %>% group_by(nome) %>%  mutate (number_of_students_in_class = count(nome))
+notas %>% group_by(escola) %>%  summarise(number_of_students_in_class = n())
+```
+
+#Summarize
+
+###Exemplo
+Questão: Use o comando summarize para encontrar a média da nota de matemática para todos os alunos.
+
+```{r}
+notas %>% summarise(mat_score_mean = mean(mat_nota))
+```
+
+###Exercícios
+Use o comando summarize para encontrar a nota média de reading para todos os estudantes.
+
+```{r}
+notas %>% summarize(reading_score_mean = mean(reading_nota))
+```
+
+
+Use o comando summarize para encontrar a mediana para as notas de matemática e reading.
+
+```{r}
+notas %>% summarise(score_reading_med = median(reading_nota), score_mat_med = median(mat_nota))
+```
+
+#Summarize com grupos
+
+###Exemplo
+
+Questão: Encontre a nota mínima de matemática para cada escola.
+
+```{r}
+notas %>% group_by(escola) %>% summarise(min_mat_score = min(mat_nota))
+```
+
+```{r}
+glimpse(notas)
+```
+
+```{r}
+is_even <- function(x) (x/2)==as.integer(x/2)
+
+notas2 <- notas %>% 
+  mutate(reading_nota = as.integer(reading_nota),
+         row = row_number(),
+         row_par = is_even(row),
+         cidade = if_else(row_par, "Rio", "SP"),
+         decimal = 1.2)
+
+notas2 %>% write_csv2("notas2.csv")
+
+
+glimpse(notas2)
+```
+
+```{r}
+notas3 <- read_csv2("notas2.csv")
+
+notas3 %>% write_xlsx("notas2.xlsx")
+```
+
+
+###Exercícios
+
+Encontre a nota máxima de math para cada professor.
+```{r}
+
+```
+
+Se agruparmos por gênero, e então sumarizarmos com a nota mínima de reading, quantas linhas o tibble resultante teria?
+```{r}
+
+```
+
+Lembre que mutate sempre mantém o mesmo número de linhas mas summarize normalmente reduz o número de linhas. Por qual motivo você acha que isso acontece?
+```{r}
+
+```
+
+crie um tibble com a média e mediana da nota de reading por gênero, bem como o número de estudantes do gênero.
+```{r}
+
 ```
 

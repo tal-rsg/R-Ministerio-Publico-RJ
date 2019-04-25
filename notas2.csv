@@ -1,0 +1,10 @@
+nome;escola;prof;genero;mat_nota;reading_nota;row;row_par;cidade;decimal
+mike;south;johnson;male;4;1;1;FALSE;SP;1,2
+carol;south;johnson;female;3;5;2;TRUE;Rio;1,2
+greg;south;johnson;male;2;2;3;FALSE;SP;1,2
+marcia;south;johnson;female;4;4;4;TRUE;Rio;1,2
+peter;north;smith;male;3;5;5;FALSE;SP;1,2
+jan;north;smith;female;4;4;6;TRUE;Rio;1,2
+bobby;north;smith;male;5;1;7;FALSE;SP;1,2
+cindy;south;perry;female;4;5;8;TRUE;Rio;1,2
+alice;south;perry;female;5;4;9;FALSE;SP;1,2
