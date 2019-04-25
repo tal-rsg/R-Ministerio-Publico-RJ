@@ -1,0 +1,253 @@
+---
+title: "Exercicio Dplyr"
+output: html_notebook
+---
+
+Este exercício esta em [Exercícios Dplyr](https://jagodat.github.io/MPRJ-Exercicios/content/ex_dplyr.html), criado por Matheus Donato. 
+
+
+```{r}
+library(tidyverse)
+```
+
+Criando a tibble que iremos usar
+
+```{r}
+notas <- 
+  tibble(
+    nome = c("mike", "carol", "greg", "marcia", "peter", "jan", "bobby", "cindy", "alice"),
+    escola = c("south", "south", "south", "south", "north", "north", "north", "south", "south"),
+    prof = c("johnson", "johnson", "johnson", "johnson",  "smith", "smith", "smith", "perry", "perry"),
+    genero = c("male", "female", "male", "female", "male", "female", "male", "female", "female"),
+    mat_nota = c(4, 3, 2, 4, 3, 4, 5, 4, 5),
+    reading_nota = c(1, 5, 2, 4, 5, 4, 1, 5, 4)
+  )
+```
+
+```{r}
+notas
+```
+
+Pegar as primeiras 3 linhas
+
+```{r}
+notas %>% slice(1:3)
+```
+
+Pegar as 3 primeiras linhas e declarar o que está sendo feito a um objeto
+
+
+```{r}
+notas_reduzidas <- notas %>% slice(1:3)
+```
+
+Vamos ver o que é "notas_reduzidas"
+
+
+```{r}
+notas_reduzidas
+```
+
+#Arrange
+Exemplo
+Questão: Ordene os dados por mat_nota do maior para o menor. Quem teve a maior nota de matemática?
+
+```{r}
+notas %>% arrange(desc(mat_nota))
+```
+
+Resposta: Bobby e Alice. Ambos empataram na maior nota de matemática.
+
+###Exercícios
+Ordene os dados pelo nome da primeira até a última letra do alfabeto.
+
+```{r}
+notas %>% arrange(nome)
+```
+
+
+Ordene os dados pelo gênero e em seguida faça females aparecer primeiro. Qual gênero aparentemente tem a melhor reading_nota?
+
+```{r}
+
+notas %>% arrange(genero)
+
+```
+
+
+Ordene os dados por escola, depois por professor, depois por gênero, depois nota de matemática e por último nota de reading.
+
+```{r}
+notas %>% arrange(escola)
+notas %>% arrange(prof)
+notas %>% arrange(genero)
+notas %>% arrange(mat_nota)
+notas %>% arrange(reading_nota)
+```
+
+#Select
+
+Questão: Selecione apenas as colunas nome, mat_nota e reading_nota.
+```{r}
+notas %>% select(nome,mat_nota,reading_nota)
+```
+
+###Exercícios
+Selecione todas as colunas exceto a coluna gênero.
+
+```{r}
+notas %>% select(-genero)
+```
+
+
+Selecione todas as colunas exceto as colunas mat_nota e reading_nota.
+
+```{r}
+notas %>% select(-mat_nota, -reading_nota)
+```
+
+Mantenha todas as colunas mas reordene e coloque a coluna gênero como a primeira.
+
+```{r}
+notas %>% select(genero,nome, escola,prof,mat_nota,reading_nota)
+```
+
+#Filter
+
+###Exemplo
+Questão: Filtre os dados para estudantes que são homens (male) e são do sul (south).
+
+```{r}
+notas %>% filter(genero == "male" & escola == "south")
+```
+
+###Exercícios
+Filtre para estudantes que forma bem em matemática, você decide o que seria ir bem (nota que tirou).
+```{r}
+notas %>% filter(mat_nota >= 4)
+```
+
+
+Use o filtro para mostrar quantos estudantes tiveram uma nota em matemática de 4 ou mais e nota de reading de 3 ou mais.
+
+```{r}
+notas %>% filter(mat_nota >= 4 & reading_nota >= 3)
+```
+
+Explique os erros em cada um dos blocos a seguir, então depois os conserte.
+
+notas %>% filter(escola == south)
+O valor filtrado deve estar entre aspas
+```{r}
+notas %>% filter(escola == "south")
+```
+
+
+notas %>% filter(escola = "south")
+Deve-se usar dois sinasi de == como operador lógico
+```{r}
+notas %>% filter(escola == "south")
+```
+
+Imagine que você está criando um programa de recuperação. Filtre os estudantes que foram 3 ou pior em matemática ou reading.
+```{r}
+notas %>% filter(mat_nota <= 3 | reading_nota <= 3)
+```
+
+Filtre estudantes que tiveram uma nota em reading de 2,3 ou 4.
+```{r}
+notas %>% filter(reading_nota == 2 | 3 | 4)
+```
+
+#Desafio
+
+Filtre estudantes que tem um nome que começa com um “m”. Dica: coloque “?str_sub” no console e veja o help dessa função.
+```{r}
+notas %>% filter(str_detect(nome, "m"))
+```
+
+#Filtre com grupos
+
+###Exemplo
+
+Questão: Filtre os professores cujo o melhor aluno de math tem nota 5.
+
+```{r}
+notas %>% group_by(prof) %>% filter(max(mat_nota) == 5)
+```
+
+###Exercícios
+
+Filtre para o gênero com uma nota média de matemática igual a 4.
+```{r}
+notas %>% group_by(genero) %>%  filter(mean(mat_nota) == 4)
+```
+
+Explique porque o código remove estudantes que tem a Perry como professora deles.
+
+```{r}
+
+```
+
+#Mutate
+
+###Exemplo
+
+Questão: Tanto as notas de matemática quanto as de reading foram na verdade de 50, substitua as duas variáveis por 10 vezes seus valores originais.
+
+```{r}
+notas %>% mutate(mat_nota = mat_nota*10,
+                  reading_nota = reading_nota*10)
+```
+
+###Exercícios
+
+Crie uma nova coluna chamada “mat_reading_new” na qual é a média das notas de um estudante de matemática e reading.
+
+```{r}
+notas %>% mutate(mat_reading_new = (mat_nota + reading_nota)/2)
+```
+
+
+Crie uma nova coluna “high_mat_achiever” que é um indicador de se o estudante ganhou um 4 ou mais na sua nota em matemática.
+
+```{r}
+notas %>% mutate(high_mat_achiever = mat_nota >= 4)
+```
+
+Cria uma nova coluna “reading_score_centered” que é a nota de reading de um estudante subtraída pela média da nota de reading de todos os estudantes.
+
+```{r}
+notas %>% mutate(reading_score_centered = reading_nota - mean(reading_nota) )
+```
+
+Crie uma nova coluna “science_score”. Você é livre para escolher essas notas.
+
+```{r}
+notas %>% mutate(science_score = c(2, 4, 5, 3, 1, 5, 4, 2, 3))
+```
+
+#Mutate com grupos
+
+###Exemplo
+
+Questão: Tanto Mike quanto Cindy tem um 4 para a nota de matemática deles. Mostre porque Mike tinha uma maior nota “mat_score_centered_by_gender”.
+
+```{r}
+notas %>% group_by(genero) %>% mutate(mat_score_centered_by_gender = mat_nota - mean(mat_nota))
+```
+
+###Exercícios
+Crie uma coluna “reading_score_centered_by_teacher”. O que você pode aprender com isso?
+Não é possivel criar uma coluna sem especificar seus valores
+
+```{r}
+notas %>% mutate(reading_score_centered_by_teacher)
+```
+
+Faça uma coluna “number_of_students_in_class” que é o número de estudantes da classe de estudantes.
+
+```{r}
+notas %>% group_by(nome) %>%  mutate (number_of_students_in_class = count(nome))
+```
+
