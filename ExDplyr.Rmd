@@ -245,7 +245,7 @@ Não é possivel criar uma coluna sem especificar seus valores
 notas %>% mutate(reading_score_centered_by_teacher)
 ```
 
-Faça uma coluna “number_of_students_in_class” que é o número de estudantes da classe de estudantes.
+Faça uma coluna “number_of_students_in_class” que é o número de estudantes da classe de estudantes
 
 ```{r}
 notas %>% group_by(nome) %>%  mutate (number_of_students_in_class = count(nome))
