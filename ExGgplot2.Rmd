@@ -336,10 +336,176 @@ library(forcats) #  desnecessário se você utilizou library(tidyverse)
 
 data %>%
   mutate(text = fct_reorder(text, value, .fun = median)) %>%  
-  ggplot( aes(...)) + 
-    geom_box... + 
-    theme( ... ) +
-    ...
+  ggplot( aes(x=text, y=value)) + 
+    geom_boxplot() + coord_flip()
+  
+  
 ```
 
+###3.2.6
+Qual é a desvantagem deste boxplot? Como podemos melhorá-lo?
+
+###3.2.7
+Vamos agora mostrar as observações individualmente utilizando geom_jitter(). Explique o que esta função faz. Tente conseguir um bom gráfico utilizando as opções width, size, alpha e color.
+
+```{r}
+data %>%
+  mutate(text = fct_reorder(text, value, .fun = median)) %>%
+  ggplot(aes(x=text, y=value, fill=text)) +
+    geom_boxplot() +
+    geom_jitter(color="grey", width=1.4, size=1.5, alpha=.8) +
+    theme(
+      legend.position = "none"
+    ) +
+    coord_flip()
+```
+
+###3.2.8 Bônus
+*construa um violin plot com geom_violin()
+```{r}
+data %>%
+  mutate(text = fct_reorder(text, value, .fun = median)) %>%  
+  ggplot( aes(x=text, y=value)) + 
+    geom_violin()
+```
+
+*descubra como adicionar um círculo vermelho representando a média de cada grupo
+*faça uma busca na internet para construir um ridgeline chart
+```{r}
+library(ggridges)
+
+data %>%
+ggplot(aes(x=value, y=text, fill = text)) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none")
+
+```
+
+#4 Ranqueamento
+
+Nesta seção iremos utilizar os dados dos 50 maiores exportadores de armas (em 2017). Este dataset está disponível no github. Carregando os dados:
+
+```{r}
+gum <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/7_OneCatOneNum.csv", header=TRUE, sep=",")
+```
+
+###4.1
+Dê uma olhada nos dados, e descreva-os. Quais gráficos podem ser utilizados para vizualisar estes dados? Qual seria o melhor, na sua opinião? Quais países estão no topo do ranking?
+
+```{r}
+head(gum)
+```
+
+```{r}
+gum %>% 
+  filter(Value > 1000) %>%
+  ggplot(aes(x=Country, y=Value )) +
+      geom_bar(stat = "identity")
+```
+
+###4.2
+
+Comece com um gráfico de barras básico utlizando geom_bar(). Observação: por default geom_bar() aceita uma variável categórica como entrada, utilizada no eixo x, e conta o número de casos a cada posição x exibindo os no eixo y. No nosso caso, queremos um valor de y para cada grupo, por isso precisamos especificar stat="identity".
+
+```{r}
+gum %>%
+  ggplot(aes(x=Country, y=Value )) +
+    geom_bar(stat="identity")
+```
+
+###4.3
+
+Colora todas as barras com a mesma cor: #69b3a2. Não gostou da cor? Escolha outra. Você tem que utilizar fill ou  color? Por quê?
+
+```{r}
+gum %>%
+  filter(Value > 1000) %>%
+  ggplot(aes(x=Country, y=Value)) +
+    geom_bar(fill="#69b3a2", stat = "identity")
+```
+
+###4.4
+
+Escolha uma cor diferente para cada barra. Você gosta do resultado? Ele é útil? Você entende a diferença entre adicionar a opção de cor dentro ou fora de aes()?
+
+```{r}
+gum %>%
+  filter(Value > 1000) %>%
+  ggplot(aes(x=Country, y=Value, fill=as.factor(Value))) +
+    geom_bar(stat = "identity") +
+    scale_fill_brewer(palette = "Set1")
+```
+
+###4.5
+
+Os gráficos anteriores não são ideais, certo? O que você pode melhorar?
+
+###4.6
+Tente o seguinte:
+
+*utilize coord_flip() para obter uma versão horizontal
+
+*observe o código abaixo para reordenar os países:
+
+```{r}
+gum %>%
+  filter(Value > 1000) %>%
+  mutate(Country=factor(Country,Country)) %>%
+  ggplot(aes(x=Country, y=Value, fill=as.factor(Value))) +
+    geom_bar(stat = "identity") +
+    scale_fill_brewer(palette = "Set1") +
+    coord_flip()
+
+```
+
+###4.7
+Um lollipop plot é utilizado sob as mesmas circunstâncias que um gráfico de barras. Contrua um com:
+
+*geom_segment() para as linhas. Argumentos necessários são x, xend, y e yend.
+
+```{r}
+gum %>% 
+  filter(Value > 1000) %>%
+ggplot(aes(x=Country, y=Value)) +
+  geom_point() + 
+  geom_segment( aes(x=Country, xend=Country, y=0, yend=Value))
+```
+
+*geom_point() para os círculos.
+
+```{r}
+gum %>% 
+  filter(Value > 1000) %>%
+ggplot(aes(x=Country, y=Value)) +
+  geom_segment( aes(x=Country, xend=Country, y=0, yend=Value)) +
+  geom_point( size=5, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2) 
+```
+
+###4.8 Bônus
+
+Melhore o gráfico anterior com o tema theme_minimal.
+```{r}
+gum %>% 
+  filter(Value > 1000) %>%
+ggplot(aes(x=Country, y=Value)) +
+  geom_segment( aes(x=Country, xend=Country, y=0, yend=Value)) +
+  geom_point( size=5, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2)+
+  theme_minimal()
+```
+
+
+Pesquise treemaps. Aplique este gráfico para os dados acima. Você deve obter algo como o gráfico abaixo:
+```{r}
+gum %>% 
+treemap(index="Country", vSize="Value", type="index")
+         
+```
+
+
+Pesquise o que é um gráfico de barras circular (circular barchart). Quais são seus prós e contras? Tente implementá-lo em R e com  ggplot2.
+
+```{r}
+
+```
 
