@@ -506,6 +506,67 @@ treemap(index="Country", vSize="Value", type="index")
 Pesquise o que é um gráfico de barras circular (circular barchart). Quais são seus prós e contras? Tente implementá-lo em R e com  ggplot2.
 
 ```{r}
+p = gum %>% 
+    ggplot(aes(x=as.factor(Country), y=Value)) +       # Note that id is a factor. If x is numeric, there is some space between the first bar
+  
+  # This add the bars with a blue color
+  geom_bar(stat="identity", fill=alpha("blue", 0.3)) +
+  
+  # Limits of the plot = very important. The negative value controls the size of the inner circle, the positive one is useful to add size over each bar
+  ylim(-100,120) +
+  
+  # Custom the theme: no axis title and no cartesian grid
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    plot.margin = unit(rep(-2,4), "cm")     # This remove unnecessary margin around plot
+  ) +
+  
+  # This makes the coordinate polar instead of cartesian.
+  coord_polar(start = 0)
+p
+```
 
+#5 Evolução
+
+Vamos considerar a evolução do preço de bitcoins entre Abril de 2013 e Abril de 2018. Os dados estão disponíveis no github. Carregue o dataset utilizando o código:
+
+```{r}
+dtbit <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered.csv", header=T)
+
+
+dtbit$date <- as.Date(dtbit$date)
+```
+
+###5.1
+Construa um gráfico básico mostrando a evolução dos preços de bitcoin utilizando geom_line().
+
+```{r}
+dtbit %>%
+  ggplot(aes(date, value)) +
+    geom_line()
+```
+
+###5.2
+Faça agora um gráfico de área utilizando geom_area(). Utilize color e fill para customizar as cores do gráfico.
+
+```{r}
+dtbit %>%
+  ggplot(aes(date, value)) +
+    geom_area(color = "blue", fill = "red")
+```
+
+###5.3
+
+Selecione os últimos 10 valores utilizando tail(). Construa um scatterplot conectado (pontos ligados por linhas), com geom_point(), geom_line() e geom_area().
+
+```{r}
+dtbit %>% tail(10) %>% 
+  ggplot(aes(date, value)) +
+    geom_point() +
+      geom_line() +
+        geom_area()
 ```
 
